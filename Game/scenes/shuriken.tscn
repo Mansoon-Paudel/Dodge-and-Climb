@@ -1,0 +1,55 @@
+[gd_scene load_steps=8 format=3 uid="uid://dnof62u6rypmp"]
+
+[ext_resource type="Texture2D" uid="uid://bpjen66kog2th" path="res://Game/assets/Shurikenspritesheet.png" id="1_foqx7"]
+[ext_resource type="Script" uid="uid://c3w25yeucon0c" path="res://Game/scripts/shuriken.gd" id="1_pl2u2"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tu8ef"]
+atlas = ExtResource("1_foqx7")
+region = Rect2(512, 0, 256, 256)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_56gbp"]
+atlas = ExtResource("1_foqx7")
+region = Rect2(512, 256, 256, 256)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fsugl"]
+atlas = ExtResource("1_foqx7")
+region = Rect2(0, 768, 256, 256)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_skprh"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tu8ef")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_56gbp")
+}, {
+"duration": 0.8,
+"texture": SubResource("AtlasTexture_fsugl")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_56gbp")
+}],
+"loop": true,
+"name": &"default",
+"speed": 7.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_foqx7"]
+size = Vector2(243, 254)
+
+[node name="Shuriken" type="Area2D"]
+z_index = 2
+script = ExtResource("1_pl2u2")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+scale = Vector2(0.233595, 0.233595)
+sprite_frames = SubResource("SpriteFrames_skprh")
+autoplay = "default"
+frame = 1
+frame_progress = 0.254789
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(2.5, -5)
+scale = Vector2(0.162943, 0.162943)
+shape = SubResource("RectangleShape2D_foqx7")

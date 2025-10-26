@@ -1,0 +1,155 @@
+[gd_scene load_steps=12 format=3 uid="uid://dlc15xxujyqeh"]
+
+[ext_resource type="Texture2D" uid="uid://dehqpi0cabqrk" path="res://Game/assets/background.png" id="1_g1ovl"]
+[ext_resource type="PackedScene" uid="uid://snqqjuccilsj" path="res://Game/scenes/pole.tscn" id="2_4nrcv"]
+[ext_resource type="PackedScene" uid="uid://ctgkdr3m7hws3" path="res://Game/scenes/character.tscn" id="3_f64ft"]
+[ext_resource type="PackedScene" uid="uid://dnof62u6rypmp" path="res://Game/scenes/shuriken.tscn" id="4_0lie2"]
+[ext_resource type="FontFile" uid="uid://1jcrc1bdrfui" path="res://Game/assets/Fonts/Tomorrow/Tomorrow-Black.ttf" id="5_q7wm2"]
+[ext_resource type="Script" uid="uid://b214j6c4wsg2b" path="res://Game/scripts/game_manager.gd" id="6_rmp5l"]
+[ext_resource type="Script" uid="uid://dp82vs5g4bi8x" path="res://Game/scenes/spawn_manager.gd" id="7_mlq2c"]
+
+[sub_resource type="Animation" id="Animation_q7wm2"]
+resource_name = "Left_shuriken"
+length = 3.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 3),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(529, -13), Vector2(529, 726)]
+}
+
+[sub_resource type="Animation" id="Animation_rmp5l"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(529, -40)]
+}
+
+[sub_resource type="Animation" id="Animation_mlq2c"]
+resource_name = "Right_shuriken"
+length = 3.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 2.97),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(625, -13), Vector2(625, 727)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_mlq2c"]
+_data = {
+&"Left_shuriken": SubResource("Animation_q7wm2"),
+&"RESET": SubResource("Animation_rmp5l"),
+&"Right_shuriken": SubResource("Animation_mlq2c")
+}
+
+[node name="Node2D" type="Node2D"]
+
+[node name="TextureRect" type="TextureRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 1.0
+offset_top = 1.0
+offset_right = 1164.0
+offset_bottom = 697.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_g1ovl")
+expand_mode = 1
+
+[node name="Pole" parent="." instance=ExtResource("2_4nrcv")]
+texture_filter = 1
+position = Vector2(578, -21)
+scale = Vector2(2.2, 3)
+script = null
+
+[node name="Character" parent="." instance=ExtResource("3_f64ft")]
+position = Vector2(518, 566)
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Death-menu" type="Panel" parent="CanvasLayer"]
+unique_name_in_owner = true
+visible = false
+offset_right = 1158.0
+offset_bottom = 652.0
+
+[node name="Label" type="Label" parent="CanvasLayer/Death-menu"]
+layout_mode = 0
+offset_left = 411.0
+offset_top = 112.0
+offset_right = 755.0
+offset_bottom = 184.0
+theme_override_fonts/font = ExtResource("5_q7wm2")
+theme_override_font_sizes/font_size = 60
+text = "YOU DIED"
+
+[node name="Re-st" type="Panel" parent="CanvasLayer/Death-menu"]
+layout_mode = 0
+offset_left = 507.0
+offset_top = 375.0
+offset_right = 651.0
+offset_bottom = 415.0
+
+[node name="Button" type="Button" parent="CanvasLayer/Death-menu/Re-st"]
+process_mode = 3
+layout_mode = 0
+offset_right = 145.0
+offset_bottom = 37.0
+theme_override_fonts/font = ExtResource("5_q7wm2")
+theme_override_font_sizes/font_size = 26
+text = "Restart"
+
+[node name="Game_Manager" type="Node" parent="."]
+script = ExtResource("6_rmp5l")
+
+[node name="Spawner" type="Node2D" parent="."]
+script = ExtResource("7_mlq2c")
+
+[node name="Shuriken-R" parent="Spawner" instance=ExtResource("4_0lie2")]
+visible = false
+position = Vector2(529, -40)
+
+[node name="AnimationPlayer-right" type="AnimationPlayer" parent="Spawner/Shuriken-R"]
+libraries = {
+&"": SubResource("AnimationLibrary_mlq2c")
+}
+
+[node name="Shuriken-L" parent="Spawner" instance=ExtResource("4_0lie2")]
+visible = false
+position = Vector2(529, -40)
+gravity_point_unit_distance = 0.586
+
+[node name="AnimationPlayer-left" type="AnimationPlayer" parent="Spawner/Shuriken-L"]
+libraries = {
+&"": SubResource("AnimationLibrary_mlq2c")
+}
+
+[node name="spawn_timer" type="Timer" parent="Spawner"]
+wait_time = 0.8
+autostart = true
+
+[connection signal="pressed" from="CanvasLayer/Death-menu/Re-st/Button" to="Game_Manager" method="_on_button_pressed"]
+[connection signal="body_entered" from="Spawner/Shuriken-R" to="Game_Manager" method="_on_shuriken_l_body_entered"]
+[connection signal="body_entered" from="Spawner/Shuriken-L" to="Game_Manager" method="_on_shuriken_l_body_entered"]
+[connection signal="timeout" from="Spawner/spawn_timer" to="Spawner" method="_on_spawn_timer_timeout"]
